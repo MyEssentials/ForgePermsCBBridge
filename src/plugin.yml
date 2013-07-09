@@ -1,0 +1,6 @@
+name: MyTownCBBridge
+main: com.sperion.mytown.cbbridge.MyTownCBBridge
+version: "1.19.6"
+author: legobear154
+description: Bridge for MyTown and Vault for Bukkit
+depend: [Vault]
