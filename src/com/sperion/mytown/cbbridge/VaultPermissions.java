@@ -8,8 +8,9 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import ee.lutsu.alpha.mc.mytown.PermissionsBase;
-import ee.lutsu.alpha.mc.mytown.entities.Resident;
+//import ee.lutsu.alpha.mc.mytown.entities.Resident;
 
 public class VaultPermissions extends PermissionsBase {
     public Permission perms = null;
@@ -28,27 +29,31 @@ public class VaultPermissions extends PermissionsBase {
         return true;
     }
     
+    /*
     @Override
     public boolean canAccess(EntityPlayer player, String node) {
-        MyTownCBBridge.log.info("(EntityPlayer)" + player.username + " asked for node: " + node);
-        String dimName = MyTownCBBridge.server.getPlayer(player.username).getWorld().getName();
-        return canAccess(player.getEntityName(), dimName, node);
+        EntityPlayerMP mp = (EntityPlayerMP)player;
+        String dimName = MyTownCBBridge.server.getPlayer(mp.getEntityName()).getWorld().getName();
+        return canAccess(player.username, dimName, node);
     }
 
     @Override
     public boolean canAccess(ICommandSender sender, String node) {
-        MyTownCBBridge.log.info("(ICommandSender)" + sender.getCommandSenderName() + " asked for node: " + node);
-        String dimName = MyTownCBBridge.server.getPlayer(sender.getCommandSenderName()).getWorld().getName();
-        return canAccess(sender.getCommandSenderName(), dimName, node);
+        if (!(sender instanceof EntityPlayer)){
+            return true;
+        } else{
+            EntityPlayer pl = (EntityPlayer)sender;
+            return canAccess(pl, node);
+        }
     }
-
+    
     @Override
     public boolean canAccess(Resident resident, String node) {
-        MyTownCBBridge.log.info("(Resident)" + resident.name() + " asked for node: " + node);
         String dimName = MyTownCBBridge.server.getPlayer(resident.name()).getWorld().getName();
         return canAccess(resident.name(), dimName, node);
     }
-
+     */
+    
     @Override
     public boolean canAccess(String name, String world, String node) {
         MyTownCBBridge.log.log(Level.INFO, name + " at " + world + " requested " + node);
