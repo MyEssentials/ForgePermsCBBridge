@@ -16,9 +16,12 @@ public class VaultPermissions extends PermissionsBase {
     public Permission perms = null;
     public Chat chat = null;
     
+    public VaultPermissions(){
+        name = "Vault";
+    }
+    
     @Override
     public boolean load(){
-        name = "Vault";
         if (MyTownCBBridge.server.getPluginManager().getPlugin("Vault") == null) {
             MyTownCBBridge.log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", "MyTownCBBridge - Vault"));
             MyTownCBBridge.server.getPluginManager().disablePlugin(MyTownCBBridge.instance);
@@ -28,31 +31,6 @@ public class VaultPermissions extends PermissionsBase {
         this.setupChat();
         return true;
     }
-    
-    /*
-    @Override
-    public boolean canAccess(EntityPlayer player, String node) {
-        EntityPlayerMP mp = (EntityPlayerMP)player;
-        String dimName = MyTownCBBridge.server.getPlayer(mp.getEntityName()).getWorld().getName();
-        return canAccess(player.username, dimName, node);
-    }
-
-    @Override
-    public boolean canAccess(ICommandSender sender, String node) {
-        if (!(sender instanceof EntityPlayer)){
-            return true;
-        } else{
-            EntityPlayer pl = (EntityPlayer)sender;
-            return canAccess(pl, node);
-        }
-    }
-    
-    @Override
-    public boolean canAccess(Resident resident, String node) {
-        String dimName = MyTownCBBridge.server.getPlayer(resident.name()).getWorld().getName();
-        return canAccess(resident.name(), dimName, node);
-    }
-     */
     
     @Override
     public boolean canAccess(String name, String world, String node) {
