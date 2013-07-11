@@ -1,4 +1,4 @@
 MyTownCBBridge
 ==============
 
-Bridges the gap between MyTown and Bukkit! (Uses Vault)
+Bridges the gap between ForgePerms and the Vauly Bukkit plugin
