@@ -1,16 +1,16 @@
-package com.sperion.mytown.cbbridge;
+package com.sperion.forgeperms.cbbridge;
 
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ee.lutsu.alpha.mc.mytown.MyTown;
+import com.sperion.forgeperms.ForgePerms;
 
-public class MyTownCBBridge extends JavaPlugin {
+public class Bridge extends JavaPlugin {
     public static Logger log;
     public static Server server;
-    public static MyTownCBBridge instance;
+    public static Bridge instance;
     
     @Override
     public void onLoad() {
@@ -25,6 +25,6 @@ public class MyTownCBBridge extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        MyTown.registerPermHandler(new VaultPermissions());
+        ForgePerms.registerHandler(new VaultPermissions());
     }
 }

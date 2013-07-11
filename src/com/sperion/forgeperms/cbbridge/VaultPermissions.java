@@ -1,4 +1,4 @@
-package com.sperion.mytown.cbbridge;
+package com.sperion.forgeperms.cbbridge;
 
 import java.util.logging.Level;
 
@@ -7,10 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import ee.lutsu.alpha.mc.mytown.PermissionsBase;
-//import ee.lutsu.alpha.mc.mytown.entities.Resident;
+import com.sperion.forgeperms.*;
 
 public class VaultPermissions extends PermissionsBase {
     public Permission perms = null;
@@ -22,9 +19,9 @@ public class VaultPermissions extends PermissionsBase {
     
     @Override
     public boolean load(){
-        if (MyTownCBBridge.server.getPluginManager().getPlugin("Vault") == null) {
-            MyTownCBBridge.log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", "MyTownCBBridge - Vault"));
-            MyTownCBBridge.server.getPluginManager().disablePlugin(MyTownCBBridge.instance);
+        if (Bridge.server.getPluginManager().getPlugin("Vault") == null) {
+            Bridge.log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", "MyTownCBBridge - Vault"));
+            Bridge.server.getPluginManager().disablePlugin(Bridge.instance);
             return false;
         }
         this.setupPermissions();
@@ -34,7 +31,7 @@ public class VaultPermissions extends PermissionsBase {
     
     @Override
     public boolean canAccess(String name, String world, String node) {
-        MyTownCBBridge.log.log(Level.INFO, name + " at " + world + " requested " + node);
+        Bridge.log.log(Level.INFO, name + " at " + world + " requested " + node);
         return perms.has(world, name, node);
     }
 
@@ -61,13 +58,13 @@ public class VaultPermissions extends PermissionsBase {
     }
     
     private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = MyTownCBBridge.server.getServicesManager().getRegistration(Chat.class);
+        RegisteredServiceProvider<Chat> rsp = Bridge.server.getServicesManager().getRegistration(Chat.class);
         chat = rsp.getProvider();
         return chat != null;
     }
 
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = MyTownCBBridge.server.getServicesManager().getRegistration(Permission.class);
+        RegisteredServiceProvider<Permission> rsp = Bridge.server.getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return perms != null;
     }
