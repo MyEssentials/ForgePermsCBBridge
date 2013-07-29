@@ -7,6 +7,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import net.minecraft.command.ICommandSender;
+
 import com.sperion.forgeperms.*;
 
 public class VaultPermissions extends PermissionsBase {
@@ -31,41 +32,61 @@ public class VaultPermissions extends PermissionsBase {
     
     @Override
     public boolean canAccess(String name, String world, String node) {
-        Bridge.log.log(Level.INFO, name + " at " + world + " requested " + node);
+        Bridge.log(Level.INFO, name + " at " + world + " requested " + node);
         return perms.has(world, name, node);
     }
 
     @Override
     public String getPrefix(String player, String world) {
-        return chat.getPlayerPrefix(world, player);
+        if (chat!=null){
+            String prefix = chat.getPlayerPrefix(world, player);
+            if (prefix==null){
+                return "";
+            } else{
+                return prefix;
+            }
+        } else{
+            return "";
+        }
     }
 
     @Override
     public String getPostfix(String player, String world) {
-        return chat.getPlayerSuffix(world, player);
+        String suffix = chat.getPlayerSuffix(world, player);
+        if (suffix==null){
+            return "";
+        } else{
+            return suffix;
+        }
     }
 
     @Override
     public String getOption(String player, String world, String node, String def) {
         // TODO Auto-generated method stub
-        return null;
+        return "";
     }
 
     @Override
     public String getOption(ICommandSender name, String node, String def) {
         // TODO Auto-generated method stub
-        return null;
+        return "";
     }
     
     private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = Bridge.server.getServicesManager().getRegistration(Chat.class);
-        chat = rsp.getProvider();
+        RegisteredServiceProvider<Chat> chatProvider = Bridge.server.getServicesManager().getRegistration(Chat.class);
+        if (chatProvider!=null){
+            chat = chatProvider.getProvider();
+            Bridge.log(Level.INFO, "Using " + chat.getName() + " for chat");
+        }
         return chat != null;
     }
 
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = Bridge.server.getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
+        RegisteredServiceProvider<Permission> permsProvider = Bridge.server.getServicesManager().getRegistration(Permission.class);
+        if (permsProvider!=null){
+            perms = permsProvider.getProvider();
+            Bridge.log(Level.INFO, "Using " + perms.getName() + " for permissions");
+        }
         return perms != null;
     }
 }

@@ -1,6 +1,0 @@
-name: ForgePermsCBBridge
-main: com.sperion.forgeperms.cbbridge.Bridge
-version: "1.19.6"
-author: legobear154
-description: Bridge for ForgePerms and Vault for Bukkit
-depend: [Vault]

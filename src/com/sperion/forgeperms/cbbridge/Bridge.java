@@ -1,5 +1,6 @@
 package com.sperion.forgeperms.cbbridge;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Server;
@@ -17,6 +18,10 @@ public class Bridge extends JavaPlugin {
         instance = this;
         log = Logger.getLogger("Minecraft");
         server = getServer();
+    }
+    
+    public static void log(Level level, String msg){
+        log.log(level, "[Bridge]" + msg);
     }
     
     @Override
