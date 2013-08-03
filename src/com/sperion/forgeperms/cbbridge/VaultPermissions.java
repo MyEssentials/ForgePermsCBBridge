@@ -52,11 +52,15 @@ public class VaultPermissions extends PermissionsBase {
 
     @Override
     public String getPostfix(String player, String world) {
-        String suffix = chat.getPlayerSuffix(world, player);
-        if (suffix==null){
-            return "";
+        if (chat!=null){
+            String suffix = chat.getPlayerSuffix(world, player);
+            if (suffix==null){
+                return "";
+            } else{
+                return suffix;
+            }
         } else{
-            return suffix;
+            return "";
         }
     }
 
