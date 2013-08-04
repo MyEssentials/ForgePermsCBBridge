@@ -32,7 +32,18 @@ public class VaultPermissions extends PermissionsBase {
     
     @Override
     public boolean canAccess(String name, String world, String node) {
+        String[] nodes = node.split("\\.");
+        String lastNode = "";
+        
+        for(int i=0; i<nodes.length-1; i++){
+            lastNode = lastNode + nodes[i]+".";
+            if (perms.has(world, name, lastNode +  "*")){
+                return true;
+            }
+        }
+        
         Bridge.log(Level.INFO, name + " at " + world + " requested " + node);
+        
         return perms.has(world, name, node);
     }
 
