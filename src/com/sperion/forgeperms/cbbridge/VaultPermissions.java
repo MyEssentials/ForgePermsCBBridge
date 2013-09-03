@@ -14,6 +14,8 @@ import com.sperion.forgeperms.*;
 public class VaultPermissions extends PermissionsBase {
     public Permission perms = null;
     public Chat chat = null;
+    
+    private boolean enhancedPermChecking;
 
     public VaultPermissions() {
         name = "Vault";
@@ -40,7 +42,7 @@ public class VaultPermissions extends PermissionsBase {
 
         String lastNode = "";
         // Check for mods that don't implement node.* entries
-        if (!result) {
+        if (!result && enhancedPermChecking) {
             String[] nodes = node.split("\\.");
             for (int i = 0; i < nodes.length - 1; i++) {
                 lastNode = lastNode + nodes[i] + ".";
@@ -133,6 +135,11 @@ public class VaultPermissions extends PermissionsBase {
         if (permsProvider != null) {
             perms = permsProvider.getProvider();
             Bridge.log(Level.INFO, "Using " + perms.getName() + " for permissions");
+            if (perms.getName().equals("PermissionsBukkit")) {
+                enhancedPermChecking = true;
+            } else {
+                enhancedPermChecking = false;
+            }
         } else {
             Bridge.log(Level.FINE, "Retrieving chatProvider failed.");
         }
