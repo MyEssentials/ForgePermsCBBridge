@@ -2,6 +2,7 @@ package com.sperion.forgeperms.cbbridge;
 
 import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.milkbowl.vault.chat.Chat;
@@ -14,12 +15,14 @@ public class VaultPermissions extends PermissionsBase {
     public Permission perms = null;
     public Chat chat = null;
     
-    public VaultPermissions(){
+    private boolean enhancedPermChecking;
+
+    public VaultPermissions() {
         name = "Vault";
     }
-    
+
     @Override
-    public boolean load(){
+    public boolean load() {
         if (Bridge.server.getPluginManager().getPlugin("Vault") == null) {
             Bridge.log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", "MyTownCBBridge - Vault"));
             Bridge.server.getPluginManager().disablePlugin(Bridge.instance);
@@ -29,50 +32,60 @@ public class VaultPermissions extends PermissionsBase {
         this.setupChat();
         return true;
     }
-    
+
     @Override
     public boolean canAccess(String name, String world, String node) {
-        String[] nodes = node.split("\\.");
+        Permission perms = getPermission();
+
+        // Normal check
+        boolean result = perms.has(world, name, node);
+
         String lastNode = "";
-        
-        for(int i=0; i<nodes.length-1; i++){
-            lastNode = lastNode + nodes[i]+".";
-            if (perms.has(world, name, lastNode +  "*")){
-                return true;
+        // Check for mods that don't implement node.* entries
+        if (!result && enhancedPermChecking) {
+            String[] nodes = node.split("\\.");
+            for (int i = 0; i < nodes.length - 1; i++) {
+                lastNode = lastNode + nodes[i] + ".";
+                if (perms.has(world, name, lastNode + "*")) {
+                    result = true;
+                }
             }
         }
-        
-        Bridge.log(Level.INFO, name + " at " + world + " requested " + node);
-        
-        return perms.has(world, name, node);
+
+        String message = name + " at " + world + " requested " + node;
+        if (StringUtils.isNotBlank(lastNode)) {
+            message += "(actual node requested: " + lastNode + ")";
+        }
+        message += " with result: " + result;
+        Bridge.log(Level.FINER, message);
+
+        return result;
     }
 
     @Override
     public String getPrefix(String player, String world) {
-        if (chat!=null){
-            String prefix = chat.getPlayerPrefix(world, player);
-            if (prefix==null){
-                return "";
-            } else{
-                return prefix;
+        String prefix = "";
+        Chat chat = getChat();
+        if (chat != null) {
+            String value = chat.getPlayerPrefix(world, player);
+            if (prefix != null) {
+                prefix = value;
             }
-        } else{
-            return "";
         }
+        return prefix;
     }
 
     @Override
     public String getPostfix(String player, String world) {
-        if (chat!=null){
-            String suffix = chat.getPlayerSuffix(world, player);
-            if (suffix==null){
-                return "";
-            } else{
-                return suffix;
+        String suffix = "";
+        Chat chat = getChat();
+        if (chat != null) {
+            String value = chat.getPlayerSuffix(world, player);
+            if (value != null) {
+                suffix = value;
             }
-        } else{
-            return "";
         }
+        return suffix;
     }
 
     @Override
@@ -86,21 +99,49 @@ public class VaultPermissions extends PermissionsBase {
         // TODO Auto-generated method stub
         return "";
     }
-    
+
+    private Chat getChat() {
+        if (chat == null) {
+            Bridge.log(Level.FINE, "chatProvider is null");
+            setupChat();
+        }
+        return chat;
+    }
+
+    private Permission getPermission() {
+        if (perms == null) {
+            Bridge.log(Level.FINE, "permissionProvider is null");
+            setupChat();
+        }
+        return perms;
+    }
+
     private boolean setupChat() {
+        Bridge.log(Level.FINE, "Retrieving chatProvider..");
         RegisteredServiceProvider<Chat> chatProvider = Bridge.server.getServicesManager().getRegistration(Chat.class);
-        if (chatProvider!=null){
+        if (chatProvider != null) {
             chat = chatProvider.getProvider();
             Bridge.log(Level.INFO, "Using " + chat.getName() + " for chat");
+        } else {
+            Bridge.log(Level.FINE, "Retrieving chatProvider failed.");
         }
+
         return chat != null;
     }
 
     private boolean setupPermissions() {
+        Bridge.log(Level.FINE, "Retrieving permissionProvider..");
         RegisteredServiceProvider<Permission> permsProvider = Bridge.server.getServicesManager().getRegistration(Permission.class);
-        if (permsProvider!=null){
+        if (permsProvider != null) {
             perms = permsProvider.getProvider();
             Bridge.log(Level.INFO, "Using " + perms.getName() + " for permissions");
+            if (perms.getName().equals("PermissionsBukkit")) {
+                enhancedPermChecking = true;
+            } else {
+                enhancedPermChecking = false;
+            }
+        } else {
+            Bridge.log(Level.FINE, "Retrieving chatProvider failed.");
         }
         return perms != null;
     }

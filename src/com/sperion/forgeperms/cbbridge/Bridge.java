@@ -15,7 +15,7 @@ public class Bridge extends JavaPlugin {
 	public static Bridge instance;
 
 	private Configuration config;
-	private static boolean debugLogEnabled;
+	private static Level loggingLevel;
 
 	@Override
 	public void onLoad() {
@@ -23,16 +23,21 @@ public class Bridge extends JavaPlugin {
 		log = Logger.getLogger("Minecraft");
 		server = getServer();
 		config = getConfig();
-		debugLogEnabled = config.getBoolean("enableDebugLogging", false);
-		config.set("enableDebugLogging", debugLogEnabled);
+		try {
+		    loggingLevel = Level.parse(config.getString("loggingLevel", "OFF"));
+		    config.set("loggingLevel", loggingLevel.toString());
+		} catch (Exception ex) {
+		    loggingLevel = Level.OFF;
+            config.set("loggingLevel", loggingLevel.toString());
+		}
 		saveConfig();
 	}
 
 	public static void log(Level level, String msg) {
-		if (debugLogEnabled) {
-			log.log(level, "[Bridge]" + msg);
-		}
-
+	    if (level.intValue() >= loggingLevel.intValue()) {
+	        log.log(Level.INFO, "[Bridge]" + msg);
+	    }
+			
 	}
 
 	@Override
