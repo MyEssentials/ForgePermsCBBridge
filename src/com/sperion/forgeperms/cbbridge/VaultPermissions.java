@@ -5,37 +5,46 @@ import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import net.minecraft.command.ICommandSender;
 
-import com.sperion.forgeperms.*;
+import com.sperion.forgeperms.api.IPermissionManager;
 
-public class VaultPermissions extends PermissionsBase {
+public class VaultPermissions implements IPermissionManager {
     public Permission perms = null;
-    public Chat chat = null;
+    public String loadError = "";
     
     private boolean enhancedPermChecking;
 
-    public VaultPermissions() {
-        name = "Vault";
+    @Override
+    public String getName() {
+        return "VaultPerms";
+    }
+
+    @Override
+    public String getLoadError() {
+        return loadError;
     }
 
     @Override
     public boolean load() {
+        Bridge.log.info("Loading " + getName());
         if (Bridge.server.getPluginManager().getPlugin("Vault") == null) {
+            loadError = "Vault Missing";
             Bridge.log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", "MyTownCBBridge - Vault"));
             Bridge.server.getPluginManager().disablePlugin(Bridge.instance);
             return false;
         }
-        this.setupPermissions();
-        this.setupChat();
+        if (!setupPermissions()){
+            loadError = "No permission plugin detected";
+            return false;
+        }
         return true;
     }
 
     @Override
     public boolean canAccess(String name, String world, String node) {
-        Permission perms = getPermission();
+        checkPermissionProvider();
 
         // Normal check
         boolean result = perms.has(world, name, node);
@@ -63,32 +72,6 @@ public class VaultPermissions extends PermissionsBase {
     }
 
     @Override
-    public String getPrefix(String player, String world) {
-        String prefix = "";
-        Chat chat = getChat();
-        if (chat != null) {
-            String value = chat.getPlayerPrefix(world, player);
-            if (prefix != null) {
-                prefix = value;
-            }
-        }
-        return prefix;
-    }
-
-    @Override
-    public String getPostfix(String player, String world) {
-        String suffix = "";
-        Chat chat = getChat();
-        if (chat != null) {
-            String value = chat.getPlayerSuffix(world, player);
-            if (value != null) {
-                suffix = value;
-            }
-        }
-        return suffix;
-    }
-
-    @Override
     public String getOption(String player, String world, String node, String def) {
         // TODO Auto-generated method stub
         return "";
@@ -100,37 +83,15 @@ public class VaultPermissions extends PermissionsBase {
         return "";
     }
 
-    private Chat getChat() {
-        if (chat == null) {
-            Bridge.log(Level.FINE, "chatProvider is null");
-            setupChat();
-        }
-        return chat;
-    }
-
-    private Permission getPermission() {
+    private void checkPermissionProvider() {
         if (perms == null) {
-            Bridge.log(Level.FINE, "permissionProvider is null");
-            setupChat();
+            Bridge.log(Level.FINE, "Permission provider is null");
+            setupPermissions();
         }
-        return perms;
-    }
-
-    private boolean setupChat() {
-        Bridge.log(Level.FINE, "Retrieving chatProvider..");
-        RegisteredServiceProvider<Chat> chatProvider = Bridge.server.getServicesManager().getRegistration(Chat.class);
-        if (chatProvider != null) {
-            chat = chatProvider.getProvider();
-            Bridge.log(Level.INFO, "Using " + chat.getName() + " for chat");
-        } else {
-            Bridge.log(Level.FINE, "Retrieving chatProvider failed.");
-        }
-
-        return chat != null;
     }
 
     private boolean setupPermissions() {
-        Bridge.log(Level.FINE, "Retrieving permissionProvider..");
+        Bridge.log(Level.FINE, "Retrieving permission provider..");
         RegisteredServiceProvider<Permission> permsProvider = Bridge.server.getServicesManager().getRegistration(Permission.class);
         if (permsProvider != null) {
             perms = permsProvider.getProvider();
@@ -140,9 +101,12 @@ public class VaultPermissions extends PermissionsBase {
             } else {
                 enhancedPermChecking = false;
             }
-        } else {
-            Bridge.log(Level.FINE, "Retrieving chatProvider failed.");
         }
-        return perms != null;
+        try{
+            perms.isEnabled();
+        } catch(NullPointerException e){
+            return false;
+        }
+        return (perms != null && perms.isEnabled());
     }
 }

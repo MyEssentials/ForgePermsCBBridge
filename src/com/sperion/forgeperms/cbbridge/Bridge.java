@@ -37,7 +37,6 @@ public class Bridge extends JavaPlugin {
 	    if (level.intValue() >= loggingLevel.intValue()) {
 	        log.log(Level.INFO, "[Bridge]" + msg);
 	    }
-			
 	}
 
 	@Override
@@ -46,6 +45,8 @@ public class Bridge extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		ForgePerms.registerHandler(new VaultPermissions());
+        ForgePerms.registerPermissionManager(new VaultPermissions());
+        ForgePerms.registerChatManager(new VaultChat());
+        ForgePerms.registerEconomyManager(new VaultEconomy());
 	}
 }
