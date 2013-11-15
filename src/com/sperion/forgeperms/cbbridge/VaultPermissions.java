@@ -2,11 +2,12 @@ package com.sperion.forgeperms.cbbridge;
 
 import java.util.logging.Level;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
 import net.milkbowl.vault.permission.Permission;
 import net.minecraft.command.ICommandSender;
+
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import com.sperion.forgeperms.api.IPermissionManager;
 
@@ -35,6 +36,7 @@ public class VaultPermissions implements IPermissionManager {
             Bridge.server.getPluginManager().disablePlugin(Bridge.instance);
             return false;
         }
+        
         if (!setupPermissions()){
             loadError = "No permission plugin detected";
             return false;
@@ -42,6 +44,7 @@ public class VaultPermissions implements IPermissionManager {
         return true;
     }
 
+    
     @Override
     public boolean canAccess(String name, String world, String node) {
         checkPermissionProvider();
@@ -83,6 +86,18 @@ public class VaultPermissions implements IPermissionManager {
         return "";
     }
 
+    @Override
+    public boolean addGroup(String player, String group) {
+        Player p = Bridge.server.getPlayer(player);
+        return perms.playerAddGroup(p, group);
+    }
+
+    @Override
+    public boolean removeGroup(String player, String group) {
+        Player p = Bridge.server.getPlayer(player);
+        return perms.playerRemoveGroup(p, group);
+    }
+
     private void checkPermissionProvider() {
         if (perms == null) {
             Bridge.log(Level.FINE, "Permission provider is null");
@@ -102,11 +117,11 @@ public class VaultPermissions implements IPermissionManager {
                 enhancedPermChecking = false;
             }
         }
-        try{
-            perms.isEnabled();
-        } catch(NullPointerException e){
-            return false;
-        }
-        return (perms != null && perms.isEnabled());
+        return (perms != null);
+    }
+
+    @Override
+    public String[] getGroupNames(String player) {
+        return perms.getGroups();
     }
 }

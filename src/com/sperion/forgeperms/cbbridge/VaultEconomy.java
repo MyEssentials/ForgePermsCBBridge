@@ -24,12 +24,7 @@ public class VaultEconomy implements IEconomyManager {
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
         }
-        try{
-            economy.isEnabled();
-        } catch(NullPointerException e){
-            return false;
-        }
-        return (economy != null && economy.isEnabled());
+        return (economy != null);
     }
     
     @Override
@@ -59,25 +54,25 @@ public class VaultEconomy implements IEconomyManager {
     }
 
     @Override
-    public double balance(String playerName, String itemID, String world) {
+    public double playerBalance(String playerName, String itemID, String world) {
         checkEconomyProvider();
         return economy.getBalance(playerName, world);
     }
 
     @Override
-    public boolean has(String playerName, String world, String itemID, double amount) {
+    public boolean playerHas(String playerName, String world, String itemID, double amount) {
         checkEconomyProvider();
         return economy.has(playerName, world, amount);
     }
 
     @Override
-    public boolean withdraw(String playerName, String world, String itemID, double amount) {
+    public boolean playerWithdraw(String playerName, String world, String itemID, double amount) {
         checkEconomyProvider();
         return economy.withdrawPlayer(playerName, world, amount).transactionSuccess();
     }
 
     @Override
-    public boolean deposit(String playerName, String world, String itemID, double amount) {
+    public boolean playerDeposit(String playerName, String world, String itemID, double amount) {
         checkEconomyProvider();
         return economy.depositPlayer(playerName, world, amount).transactionSuccess();
     }
@@ -97,5 +92,29 @@ public class VaultEconomy implements IEconomyManager {
     @Override
     public boolean rightClickToPay() {
         return false;
+    }
+
+    @Override
+    public double bankBalance(String name, String itemID) {
+        checkEconomyProvider();
+        return economy.bankBalance(name).balance;
+    }
+
+    @Override
+    public boolean bankHas(String name, String itemID, double amount) {
+        checkEconomyProvider();
+        return economy.bankHas(name, amount).transactionSuccess();
+    }
+
+    @Override
+    public boolean bankWithdraw(String name, String itemID, double amount) {
+        checkEconomyProvider();
+        return economy.bankWithdraw(name, amount).transactionSuccess();
+    }
+
+    @Override
+    public boolean bankDeposit(String name, String itemID, double amount) {
+        checkEconomyProvider();
+        return economy.bankDeposit(name, amount).transactionSuccess();
     }
 }

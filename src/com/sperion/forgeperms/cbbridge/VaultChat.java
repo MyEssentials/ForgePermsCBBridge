@@ -17,12 +17,7 @@ public class VaultChat implements IChatManager {
         if (chatProvider != null) {
             chat = chatProvider.getProvider();
         }
-        try{
-            chat.isEnabled();
-        } catch(NullPointerException e){
-            return false;
-        }
-        return (chat != null && chat.isEnabled());
+        return (chat != null);
     }
     
     private void checkChatProvider(){
@@ -62,11 +57,21 @@ public class VaultChat implements IChatManager {
     public String getPlayerPrefix(String world, String player) {
         checkChatProvider();
         
+        if (player == null || player.isEmpty()){
+            return "";
+        }
+        
         return chat.getPlayerPrefix(world, player);
     }
 
     @Override
     public String getPlayerSuffix(String world, String player) {
+        checkChatProvider();
+        
+        if (player == null || player.isEmpty()){
+            return "";
+        }
+        
         return chat.getPlayerSuffix(world, player);
     }
 

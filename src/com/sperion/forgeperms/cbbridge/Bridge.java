@@ -16,6 +16,9 @@ public class Bridge extends JavaPlugin {
 
 	private Configuration config;
 	private static Level loggingLevel;
+    private static boolean permissions;
+    private static boolean economy;
+    private static boolean chat;
 
 	@Override
 	public void onLoad() {
@@ -25,6 +28,9 @@ public class Bridge extends JavaPlugin {
 		config = getConfig();
 		try {
 		    loggingLevel = Level.parse(config.getString("loggingLevel", "OFF"));
+            permissions = config.getBoolean("enablePermissions", true);
+            economy = config.getBoolean("enableEconomy", true);
+            chat = config.getBoolean("enableChat", true);
 		    config.set("loggingLevel", loggingLevel.toString());
 		} catch (Exception ex) {
 		    loggingLevel = Level.OFF;
@@ -45,8 +51,14 @@ public class Bridge extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-        ForgePerms.registerPermissionManager(new VaultPermissions());
-        ForgePerms.registerChatManager(new VaultChat());
-        ForgePerms.registerEconomyManager(new VaultEconomy());
+	    if (permissions){
+	        ForgePerms.registerPermissionManager(new VaultPermissions());
+	    }
+	    if (chat){
+	        ForgePerms.registerChatManager(new VaultChat());
+	    }
+	    if (economy){
+	        ForgePerms.registerEconomyManager(new VaultEconomy());
+	    }
 	}
 }
