@@ -3,7 +3,6 @@ package com.sperion.forgeperms.cbbridge;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.permission.Permission;
-import net.minecraft.command.ICommandSender;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
@@ -75,18 +74,6 @@ public class VaultPermissions implements IPermissionManager {
     }
 
     @Override
-    public String getOption(String player, String world, String node, String def) {
-        // TODO Auto-generated method stub
-        return "";
-    }
-
-    @Override
-    public String getOption(ICommandSender name, String node, String def) {
-        // TODO Auto-generated method stub
-        return "";
-    }
-
-    @Override
     public boolean addGroup(String player, String group) {
         Player p = Bridge.server.getPlayer(player);
         return perms.playerAddGroup(p, group);
@@ -123,5 +110,10 @@ public class VaultPermissions implements IPermissionManager {
     @Override
     public String[] getGroupNames(String player) {
         return perms.getGroups();
+    }
+
+    @Override
+    public String getPrimaryGroup(String world, String playerName) {
+        return perms.getPrimaryGroup(world, playerName);
     }
 }

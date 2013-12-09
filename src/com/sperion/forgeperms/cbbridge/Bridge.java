@@ -16,9 +16,9 @@ public class Bridge extends JavaPlugin {
 
 	private Configuration config;
 	private static Level loggingLevel;
-    private static boolean permissions;
-    private static boolean economy;
-    private static boolean chat;
+    private static boolean permissions = true;
+    private static boolean economy = false;
+    private static boolean chat = true;
 
 	@Override
 	public void onLoad() {
@@ -28,13 +28,19 @@ public class Bridge extends JavaPlugin {
 		config = getConfig();
 		try {
 		    loggingLevel = Level.parse(config.getString("loggingLevel", "OFF"));
-            permissions = config.getBoolean("enablePermissions", true);
-            economy = config.getBoolean("enableEconomy", true);
-            chat = config.getBoolean("enableChat", true);
-		    config.set("loggingLevel", loggingLevel.toString());
+            permissions = config.getBoolean("permissions", true);
+            economy = config.getBoolean("economy", false);
+            chat = config.getBoolean("chat", true);
+            config.set("loggingLevel", loggingLevel.toString());
+            config.set("permissions", permissions);
+            config.set("economy", economy);
+            config.set("chat", chat);
 		} catch (Exception ex) {
 		    loggingLevel = Level.OFF;
             config.set("loggingLevel", loggingLevel.toString());
+            config.set("permissions", permissions);
+            config.set("economy", economy);
+            config.set("chat", chat);
 		}
 		saveConfig();
 	}
