@@ -1,4 +1,4 @@
-package com.sperion.forgeperms.cbbridge;
+package forgeperms.cbbridge;
 
 import java.util.logging.Level;
 
@@ -7,7 +7,7 @@ import net.milkbowl.vault.chat.Chat;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import com.sperion.forgeperms.api.IChatManager;
+import forgeperms.api.IChatManager;
 
 public class VaultChat implements IChatManager {
     Chat chat = null;

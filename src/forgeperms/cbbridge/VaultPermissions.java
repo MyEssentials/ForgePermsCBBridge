@@ -1,4 +1,4 @@
-package com.sperion.forgeperms.cbbridge;
+package forgeperms.cbbridge;
 
 import java.util.logging.Level;
 
@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import com.sperion.forgeperms.api.IPermissionManager;
+import forgeperms.api.IPermissionManager;
 
 public class VaultPermissions implements IPermissionManager {
     public Permission perms = null;

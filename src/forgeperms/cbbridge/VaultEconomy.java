@@ -1,4 +1,4 @@
-package com.sperion.forgeperms.cbbridge;
+package forgeperms.cbbridge;
 
 import java.util.logging.Level;
 
@@ -6,7 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import com.sperion.forgeperms.api.IEconomyManager;
+import forgeperms.api.IEconomyManager;
 
 public class VaultEconomy implements IEconomyManager {
     private Economy economy;

@@ -1,4 +1,4 @@
-package com.sperion.forgeperms.cbbridge;
+package forgeperms.cbbridge;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,7 +7,7 @@ import org.bukkit.Server;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.sperion.forgeperms.ForgePerms;
+import forgeperms.ForgePerms;
 
 public class Bridge extends JavaPlugin {
 	public static Logger log;
