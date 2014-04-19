@@ -43,7 +43,6 @@ public class VaultPermissions implements IPermissionManager {
         return true;
     }
 
-    
     @Override
     public boolean canAccess(String name, String world, String node) {
         checkPermissionProvider();
