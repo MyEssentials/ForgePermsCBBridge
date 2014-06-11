@@ -7,7 +7,7 @@ import org.bukkit.Server;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import forgeperms.ForgePerms;
+import forgeperms.api.ForgePermsAPI;
 
 public class Bridge extends JavaPlugin {
 	public static Logger log;
@@ -58,13 +58,13 @@ public class Bridge extends JavaPlugin {
 	@Override
 	public void onEnable() {
 	    if (permissions){
-	        ForgePerms.registerPermissionManager(new VaultPermissions());
+	    	ForgePermsAPI.permManager = new VaultPermissions();
 	    }
 	    if (chat){
-	        ForgePerms.registerChatManager(new VaultChat());
+	    	ForgePermsAPI.chatManager = new VaultChat();
 	    }
 	    if (economy){
-	        ForgePerms.registerEconomyManager(new VaultEconomy());
+	    	ForgePermsAPI.econManager = new VaultEconomy();
 	    }
 	}
 }
